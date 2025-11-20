@@ -1,0 +1,12 @@
+// Mock environment variables for tests
+process.env.NODE_ENV = 'test'
+process.env.JWT_SECRET = 'test-secret-key'
+process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-key'
+process.env.JWT_EXPIRES_IN = '1h'
+process.env.JWT_REFRESH_EXPIRES_IN = '7d'
+process.env.DB_HOST = 'localhost'
+process.env.DB_PORT = '5432'
+process.env.DB_NAME = 'movies_test'
+process.env.DB_USER = 'postgres'
+process.env.DB_PASSWORD = 'postgres'
+process.env.PORT = '3002'

@@ -1,0 +1,16 @@
+node_modules
+.nuxt
+.output
+npm-debug.log
+.env
+.env.*
+!.env.example
+tests
+coverage
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+dist
+.DS_Store

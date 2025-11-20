@@ -1,0 +1,16 @@
+.git
+.gitignore
+README.md
+.env
+.env.*
+!.env.example
+node_modules
+**/node_modules
+npm-debug.log
+docs/
+.github/
+**/.DS_Store
+**/coverage
+**/tests
+**/.nuxt
+**/.output

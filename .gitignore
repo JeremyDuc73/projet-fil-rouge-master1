@@ -1,0 +1,73 @@
+# ============================================
+# CineZone - Monorepo .gitignore
+# ============================================
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# pnpm
+.pnpm-debug.log*
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.output/
+.nuxt/
+out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+*.lcov
+.nyc_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Uploads
+apps/backend/uploads/*
+!apps/backend/uploads/.gitkeep
+
+# Temporary files
+*.tmp
+tmp/
+temp/
+
+# OS
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Cache
+.cache/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# Production
+.vercel
+.netlify
