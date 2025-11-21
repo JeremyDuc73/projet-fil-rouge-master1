@@ -76,7 +76,7 @@ jobs:
       # Frontend Tests
       - name: 🧪 Run Frontend Tests
         working-directory: apps/frontend
-        run: pnpm test:unit # Assurez-vous que ce script existe dans package.json
+        run: pnpm test
 
       # Linting (Sans le || true pour bloquer si erreurs)
       - name: 🔍 Lint Code
