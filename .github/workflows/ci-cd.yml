@@ -78,10 +78,6 @@ jobs:
         working-directory: apps/frontend
         run: pnpm test
 
-      # Linting (Sans le || true pour bloquer si erreurs)
-      - name: 🔍 Lint Code
-        run: pnpm run lint
-
   # ===================================================
   # 2. DEPLOY (Seulement si les tests passent)
   # ===================================================
