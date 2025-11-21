@@ -162,6 +162,7 @@
               <td class="px-6 py-4">
                 <div class="flex items-center gap-4">
                   <img
+                    v-if="movie.poster_url"
                     :src="getImageUrl(movie.poster_url)"
                     :alt="movie.title"
                     class="w-12 h-18 object-cover rounded"
@@ -390,7 +391,12 @@ definePageMeta({
 })
 
 const toast = useToast()
-const { getImageUrl } = useImageUrl()
+const getImageUrl = (url: string) => {
+  if (!url) return ''
+  if (url.startsWith('http')) return url
+  const config = useRuntimeConfig()
+  return `${config.public.apiUrl}${url}`
+}
 const isLoading = ref(true)
 const isDeleting = ref(false)
 const isImporting = ref(false)
