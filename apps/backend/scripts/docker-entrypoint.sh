@@ -24,12 +24,6 @@ done
 
 echo "✅ PostgreSQL is ready!"
 
-# Ensure uploads directory exists
-echo "📁 Creating uploads directories..."
-mkdir -p uploads/posters
-chmod -R 755 uploads
-echo "✅ Uploads directories ready!"
-
 # Check if we should seed TMDB data
 if [ "${SEED_TMDB_ON_START}" = "true" ]; then
   echo "🎬 Seeding TMDB data..."
