@@ -82,9 +82,7 @@ CineZone est une plateforme complète de gestion de films qui permet aux utilisa
 - [📋 Vue d'Ensemble des Tests](./docs/testing/README.md)
 
 ### 🚢 Déploiement
-- [🐳 Docker](./docs/deployment/docker.md) *(À venir)*
-- [⚡ CI/CD](./docs/deployment/ci-cd.md) *(À venir)*
-- [🌍 Production](./docs/deployment/production.md) *(À venir)*
+- [⚡ CI/CD](./docs/deployment/ci-cd.md)
 
 ---
 
