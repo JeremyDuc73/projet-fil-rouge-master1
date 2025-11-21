@@ -23,7 +23,7 @@ NC='\033[0m' # No Color
 cd "$APP_DIR"
 
 echo -e "${BLUE}📦 Pulling latest code...${NC}"
-git pull origin main
+git pull origin master
 
 # Backup database
 if [ "$1" != "--skip-backup" ]; then
