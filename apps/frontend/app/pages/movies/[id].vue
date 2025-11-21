@@ -898,6 +898,7 @@ const getPosterUrl = (url: string) => {
   return `${config.public.apiUrl}${url}`
 }
 
+
 const getColorFromTitle = (title: string) => {
   const colors = [
     '#EF4444', '#F59E0B', '#10B981', '#3B82F6', 
