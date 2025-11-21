@@ -111,9 +111,6 @@ jobs:
             echo "🔄 Pulling latest code..."
             git pull origin master
           
-            # S'assurer que le script est exécutable
-            chmod +x scripts/deploy.sh
-          
             echo "🔨 Building and deploying..."
             bash scripts/deploy.sh
           
