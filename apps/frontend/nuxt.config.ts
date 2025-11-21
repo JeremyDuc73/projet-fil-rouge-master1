@@ -12,6 +12,13 @@ export default defineNuxtConfig({
     '@nuxt/test-utils'
   ],
 
+  // Icon configuration
+  icon: {
+    serverBundle: {
+      collections: ['ph'] // Bundle Phosphor Icons for production
+    }
+  },
+
   // CSS
   css: ['@/assets/css/main.css'],
   vite: {

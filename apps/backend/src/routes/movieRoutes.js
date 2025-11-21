@@ -6,6 +6,7 @@ import { uploadPoster } from '../config/multer.js';
 const router = Router();
 
 router.get('/', movieController.getAllMovies);
+router.get('/:id/similar', movieController.getSimilarMovies); // DOIT être AVANT /:id
 router.get('/:id', movieController.getMovieById);
 
 router.post('/', authenticate, requireAdmin, movieController.createMovie);

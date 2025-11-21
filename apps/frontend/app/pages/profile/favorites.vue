@@ -1,29 +1,35 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-          Mes Favoris
-        </h1>
-        <p class="text-gray-600 dark:text-gray-400">
-          {{ favorites.length }} film{{ favorites.length > 1 ? 's' : '' }} dans vos favoris
-        </p>
-      </div>
-      
-      <UButton 
-        v-if="favorites.length > 0"
-        to="/movies"
-        variant="outline"
-        color="gray"
-        icon="ph:plus"
-      >
-        Découvrir plus
-      </UButton>
+    <div class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        Mes Favoris
+      </h1>
+      <ClientOnly>
+        <div class="flex items-center justify-between">
+          <p class="text-gray-600 dark:text-gray-400">
+            {{ favorites.length }} film{{ favorites.length > 1 ? 's' : '' }} dans vos favoris
+          </p>
+          
+          <UButton 
+            v-if="favorites.length > 0"
+            to="/movies"
+            variant="outline"
+            color="gray"
+            icon="ph:plus"
+          >
+            Découvrir plus
+          </UButton>
+        </div>
+        <template #fallback>
+          <p class="text-gray-600 dark:text-gray-400">Chargement...</p>
+        </template>
+      </ClientOnly>
     </div>
 
-    <!-- Loading State -->
-    <div v-if="isLoading" class="flex items-center justify-center py-20">
+    <ClientOnly>
+      <!-- Loading State -->
+      <div v-if="isLoading" class="flex items-center justify-center py-20">
       <div class="text-center">
         <div class="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
         <p class="text-gray-600 dark:text-gray-400">Chargement de vos favoris...</p>
@@ -57,14 +63,24 @@
         
         <!-- Remove Button -->
         <button
-          @click.prevent="handleRemove(movie.id)"
-          class="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg z-10"
-          title="Retirer des favoris"
+            @click.prevent="handleRemove(movie.id)"
+            class="h-9 w-9 cursor-pointer absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg z-10"
+            title="Supprimer la note"
         >
-          <Icon name="ph:x" class="w-4 h-4" />
+          <Icon name="heroicons:x-mark" class="w-5 h-5 stroke-2" />
         </button>
       </div>
     </div>
+    
+    <template #fallback>
+      <div class="flex items-center justify-center py-20">
+        <div class="text-center">
+          <div class="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p class="text-gray-600 dark:text-gray-400">Chargement...</p>
+        </div>
+      </div>
+    </template>
+    </ClientOnly>
   </div>
 </template>
 

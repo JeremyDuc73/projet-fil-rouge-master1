@@ -361,14 +361,18 @@
     </div>
 
     <!-- Similar Movies Section -->
-    <div class="bg-gray-50 dark:bg-gray-950 py-12">
+    <div v-if="similarMovies.length > 0" class="bg-gray-50 dark:bg-gray-950 py-12">
       <div class="container mx-auto px-4">
         <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">
           Films similaires
         </h2>
-        <p class="text-gray-600 dark:text-gray-400">
-          Cette section sera développée dans une prochaine phase
-        </p>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+          <MovieCard
+            v-for="similarMovie in similarMovies"
+            :key="similarMovie.id"
+            :movie="similarMovie"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -435,6 +439,7 @@ const isTogglingWatchlist = ref(false)
 const isUpdatingStatus = ref(false)
 const movieRating = ref<any>(null)
 const playerIframe = ref<HTMLIFrameElement | null>(null)
+const similarMovies = ref<any[]>([])
 
 // Reviews state
 const showReviewForm = ref(false)
@@ -502,6 +507,9 @@ onMounted(async () => {
   
   // Load movie reviews
   await loadReviews()
+  
+  // Load similar movies
+  await loadSimilarMovies()
 })
 
 // Load reviews
@@ -517,6 +525,19 @@ const loadReviews = async () => {
     console.error('Error loading reviews:', error)
   } finally {
     isLoadingReviews.value = false
+  }
+}
+
+// Load similar movies
+const loadSimilarMovies = async () => {
+  try {
+    const api = useApi()
+    const response = await api.get(`/movies/${movieId}/similar?limit=6`)
+    similarMovies.value = response.data || []
+    console.log('✅ Films similaires chargés:', similarMovies.value.length, 'films')
+  } catch (error) {
+    console.error('❌ Error loading similar movies:', error)
+    similarMovies.value = []
   }
 }
 

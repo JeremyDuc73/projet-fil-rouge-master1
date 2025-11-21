@@ -116,3 +116,15 @@ export const importTMDBMovieById = asyncHandler(async (req, res) => {
         message: 'Film importé avec succès'
     });
 });
+
+export const getSimilarMovies = asyncHandler(async (req, res) => {
+    const movieId = parseInt(req.params.id); // Convertir en nombre
+    const limit = req.query.limit ? parseInt(req.query.limit) : 6;
+    
+    const similarMovies = await movieService.getSimilarMovies(movieId, limit);
+
+    res.json({
+        success: true,
+        data: similarMovies
+    });
+});

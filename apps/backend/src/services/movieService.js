@@ -232,6 +232,72 @@ class MovieService {
             throw new Error('Failed to import movies from TMDB');
         }
     }
+
+    async getSimilarMovies(movieId, limit = 6) {
+        // Récupérer le film avec ses catégories
+        const movie = await movieRepository.findByIdWithDetails(movieId);
+        if (!movie) {
+            throw new NotFoundError('Movie');
+        }
+
+        const similarMovies = [];
+        const movieTitle = movie.title.toLowerCase();
+        
+        // Extraire le "nom de base" pour les séries (ex: "Harry Potter" de "Harry Potter et la Pierre Philosophale")
+        const baseTitle = movieTitle
+            .replace(/\s+(et|and|de|the|le|la|les|des|à|au|aux)\s+.*/gi, '') // Enlever "et la...", "and the..."
+            .replace(/\s*:\s*.*/g, '') // Enlever tout après ":"
+            .replace(/\s*-\s*.*/g, '') // Enlever tout après "-"
+            .replace(/\s+\d+.*$/g, '') // Enlever les numéros à la fin
+            .replace(/\s+(partie|part|chapter|chapitre|tome|volume|saison|season)\s+\d+.*$/gi, '')
+            .trim();
+
+        try {
+            // 1. Chercher d'abord les films avec un titre similaire (même franchise)
+            const allMoviesData = await movieRepository.findAllWithFilters({ 
+                page: 1, 
+                limit: 200 // Charger les 200 premiers films
+            });
+            const allMovies = allMoviesData.movies;
+            
+            for (const m of allMovies) {
+                if (m.id === movieId) continue; // Skip le film actuel
+                
+                const otherTitle = m.title.toLowerCase();
+                
+                // Si le titre contient le "nom de base" → c'est de la même saga
+                if (baseTitle.length > 3 && otherTitle.includes(baseTitle)) {
+                    similarMovies.push(m);
+                    if (similarMovies.length >= limit) {
+                        return similarMovies;
+                    }
+                }
+            }
+            
+            // 2. Compléter avec des films de la même catégorie
+            if (similarMovies.length < limit && movie.categories && movie.categories.length > 0) {
+                const categoryIds = movie.categories.map(c => c.id);
+                
+                for (const m of allMovies) {
+                    if (m.id === movieId) continue;
+                    if (similarMovies.find(sm => sm.id === m.id)) continue; // Déjà ajouté
+                    
+                    // Si le film partage au moins une catégorie
+                    if (m.categories && m.categories.some(c => categoryIds.includes(c.id))) {
+                        similarMovies.push(m);
+                        if (similarMovies.length >= limit) {
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            return similarMovies;
+        } catch (error) {
+            console.error('Error fetching similar movies:', error);
+            return [];
+        }
+    }
 }
 
 export default new MovieService();

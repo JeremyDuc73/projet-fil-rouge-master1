@@ -88,6 +88,22 @@ class TMDBService {
         }
     }
 
+    async getSimilarMovies(movieId, page = 1) {
+        try {
+            const response = await axios.get(`${this.baseURL}/movie/${movieId}/similar`, {
+                params: {
+                    api_key: this.apiKey,
+                    language: 'fr-FR',
+                    page
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error(`TMDB API Error for similar movies ${movieId}:`, error.message);
+            throw new Error('Failed to fetch similar movies from TMDB');
+        }
+    }
+
     formatMovieForDB(tmdbMovie, movieDetails = null) {
         return {
             tmdb_id: tmdbMovie.id,
