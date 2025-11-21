@@ -15,7 +15,11 @@ export default defineNuxtConfig({
   // Icon configuration
   icon: {
     serverBundle: {
-      collections: ['ph'] // Bundle Phosphor Icons for production
+      collections: ['ph']
+    },
+    clientBundle: {
+      scan: true,
+      include: ['ph:heart', 'ph:heart-fill']
     }
   },
 
