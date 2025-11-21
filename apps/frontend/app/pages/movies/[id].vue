@@ -282,13 +282,13 @@
 
         <ClientOnly>
           <div class="relative rounded-xl overflow-hidden bg-black shadow-2xl" style="padding-bottom: 56.25%; height: 0;">
-<!--            <iframe-->
-<!--              ref="playerIframe"-->
-<!--              :src="`https://player.embed-api.stream/?id=${movie.tmdb_id}`"-->
-<!--              class="absolute top-0 left-0 w-full h-full"-->
-<!--              frameborder="0"-->
-<!--              allow="fullscreen"-->
-<!--            ></iframe>-->
+            <iframe
+              ref="playerIframe"
+              :src="`https://player.embed-api.stream/?id=${movie.tmdb_id}`"
+              class="absolute top-0 left-0 w-full h-full"
+              frameborder="0"
+              allow="fullscreen"
+            ></iframe>
           </div>
         </ClientOnly>
         
