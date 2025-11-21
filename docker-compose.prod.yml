@@ -71,6 +71,7 @@ services:
     restart: always
     environment:
       NODE_ENV: production
+      NUXT_PUBLIC_API_URL: ${NUXT_PUBLIC_API_URL}
       NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
     ports:
       - "127.0.0.1:3002:3000"
