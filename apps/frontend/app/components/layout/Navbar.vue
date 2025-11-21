@@ -4,7 +4,7 @@
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <NuxtLink to="/" class="flex items-center gap-2 group">
-          <Icon name="ph:film-strip-duotone" class="w-8 h-8 text-primary-500 group-hover:scale-110 transition-transform" />
+          <img src="/logo.svg" alt="CineZone Logo" class="w-8 h-8 group-hover:scale-110 transition-transform" />
           <span class="text-xl font-bold text-gray-900 dark:text-white">CineZone</span>
         </NuxtLink>
 

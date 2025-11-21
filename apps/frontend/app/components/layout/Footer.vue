@@ -1,24 +1,24 @@
-<template>
+  <template>
   <footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 mt-auto">
     <div class="container mx-auto px-4 py-8">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         <!-- Brand -->
         <div class="space-y-4">
           <div class="flex items-center gap-2">
-            <Icon name="ph:film-strip-duotone" class="w-8 h-8 text-primary-500" />
+            <img src="/logo.svg" alt="CineZone Logo" class="w-8 h-8" />
             <span class="text-xl font-bold text-gray-900 dark:text-white">CineZone</span>
           </div>
           <p class="text-sm text-gray-600 dark:text-gray-400">
             Votre plateforme de gestion et découverte de films préférés.
           </p>
           <div class="flex gap-3">
-            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors">
-              <Icon name="ph:twitter-logo" class="w-5 h-5" />
+            <a href="https://github.com/JeremyDuc73?tab=repositories" class="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors">
+              <Icon name="ph:github-logo" class="w-5 h-5" />
             </a>
-            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors">
-              <Icon name="ph:facebook-logo" class="w-5 h-5" />
+            <a href="https://www.linkedin.com/in/jeremyduc/" class="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors">
+              <Icon name="ph:linkedin-logo" class="w-5 h-5" />
             </a>
-            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors">
+            <a href="https://www.instagram.com/jeremy.duc/" class="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors">
               <Icon name="ph:instagram-logo" class="w-5 h-5" />
             </a>
           </div>
@@ -108,7 +108,7 @@
             © {{ currentYear }} CineZone. Tous droits réservés.
           </p>
           <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-            <span>Développé avec ❤️ par l'équipe CineZone</span>
+            <span>Développé par Jérémy DUC</span>
           </div>
         </div>
       </div>

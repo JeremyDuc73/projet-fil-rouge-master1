@@ -207,12 +207,8 @@ const handleSubmit = async () => {
     if (posterFile.value) {
       const formData = new FormData()
       formData.append('poster', posterFile.value)
-      
-      await api.post(`/movies/${movieId}/poster`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+
+      await api.post(`/movies/${movieId}/poster`, formData)
     }
     
     toast.add({

@@ -6,10 +6,10 @@
         <!-- Logo -->
         <div class="p-6 border-b border-gray-200 dark:border-gray-800">
           <NuxtLink to="/admin/dashboard" class="flex items-center gap-2">
-            <Icon name="ph:shield-check-fill" class="w-8 h-8 text-primary-500" />
+            <img src="/logo.svg" alt="CineZone Logo" class="w-10 h-10" />
             <div>
-              <h2 class="text-xl font-bold text-gray-900 dark:text-white">Admin</h2>
-              <p class="text-xs text-gray-500 dark:text-gray-400">Panel d'administration</p>
+              <h2 class="text-xl font-bold text-gray-900 dark:text-white">CineZone</h2>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Administration</p>
             </div>
           </NuxtLink>
         </div>
