@@ -8,10 +8,10 @@ on:
 
 jobs:
   # ===================================================
-  # 1. TESTS & LINT (Backend + Frontend)
+  # 1. TESTS (Backend + Frontend)
   # ===================================================
   tests:
-    name: 🧪 Run Tests & Lint
+    name: 🧪 Run Tests
     runs-on: ubuntu-latest
 
     services:
@@ -83,8 +83,8 @@ jobs:
   # ===================================================
   deploy:
     name: 🚀 Deploy to VPS
-    needs: tests # C'est ICI la clé : on attend que les tests soient OK
-    if: github.ref == 'refs/heads/master' # Seulement sur la branche master
+    needs: tests
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment: production
 

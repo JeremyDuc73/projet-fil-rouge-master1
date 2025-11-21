@@ -10,21 +10,21 @@ CineZone est une application full-stack moderne suivant une architecture **API R
 └────────────────────┬────────────────────────────────────┘
                      │
          ┌───────────▼──────────┐
-         │   Nuxt.js Frontend   │  Port 3000
+         │   Nuxt.js Frontend   │  
          │   (SSR + SPA)        │
          └───────────┬──────────┘
                      │
               HTTP/REST API
                      │
          ┌───────────▼──────────┐
-         │   Express Backend    │  Port 3001
+         │   Express Backend    │
          │   (Node.js API)      │
          └───────────┬──────────┘
                      │
               SQL Queries
                      │
          ┌───────────▼──────────┐
-         │   PostgreSQL DB      │  Port 5432
+         │   PostgreSQL DB      │
          └──────────────────────┘
 ```
 
@@ -90,13 +90,13 @@ apps/
 
 - **JWT** pour l'authentification stateless
 - **Access Token** (1h) + **Refresh Token** (7j)
-- Stockage : localStorage (tokens), httpOnly cookie (optionnel)
+- Stockage : localStorage (tokens)
 
 ### Authorization
 
 Système de **rôles** :
 - `user` : Accès basique
-- `premium` : Visionnage vidéos
+- `premium` : Fonctionnalités en beta
 - `admin` : CRUD films/users
 - `super_admin` : Tous les droits
 
@@ -133,52 +133,6 @@ categories
   └─── movie_categories
 ```
 
-### Triggers
-
-- **update_movie_rating_trigger** : Recalcule automatiquement la moyenne communautaire quand un avis est ajouté/modifié/supprimé
-
----
-
-## 🔄 Flux de Données
-
-### 1. Authentification
-
-```
-User (Frontend)
-  → POST /api/auth/register
-  → Backend: Hash password + Create user
-  → Return: { user, accessToken, refreshToken }
-  → Frontend: Store tokens + Set user in store
-  → Redirect to /
-```
-
-### 2. Récupération de Films
-
-```
-User (Frontend)
-  → GET /api/movies?category=action&min_rating=7
-  → Backend: 
-      - Validate query params
-      - Repository: Build SQL with filters
-      - Return paginated results
-  → Frontend: Update moviesStore
-  → Render grid
-```
-
-### 3. Ajout Watchlist
-
-```
-User (Authenticated)
-  → POST /api/watchlist { movieId, status: 'to_watch' }
-  → Backend:
-      - Verify JWT (middleware)
-      - Check movie exists
-      - Insert/Update watchlist entry
-      - Return updated watchlist
-  → Frontend: Update watchlistStore
-  → UI reflects change
-```
-
 ---
 
 ## 🚀 Performance
@@ -199,15 +153,6 @@ User (Authenticated)
 
 ---
 
-## 📊 Monitoring (À venir)
-
-- **Logs** : Winston pour logs structurés
-- **Erreurs** : Sentry pour tracking
-- **Métriques** : Prometheus/Grafana
-- **Health Checks** : Endpoints `/health`
-
----
-
 ## 🔗 Intégrations Externes
 
 ### TMDB API
@@ -215,12 +160,6 @@ User (Authenticated)
 - **Usage** : Import automatique de films
 - **Données** : Métadonnées, posters, backdrops, trailers
 - **Rate Limit** : Respecté via throttling
-
-### Future
-
-- **Stripe** : Abonnement premium (potentiel)
-- **SendGrid** : Emails transactionnels
-- **Cloudinary** : Hébergement images (optionnel)
 
 ---
 
@@ -236,62 +175,16 @@ User (Authenticated)
 
 - **Component Tests** : Vue Test Utils
 - **Store Tests** : Pinia testable
-- **E2E Tests** : Playwright (à venir)
 
 ---
 
 ## 🐳 Déploiement
-
-### Development
-
-```bash
-# Local avec hot-reload
-npm run dev
-```
-
-### Production
-
-```bash
-# Docker Compose
-docker-compose up -d
-
-# Ou séparé
-npm run build
-npm start
-```
 
 ### Infrastructure
 
 - **Serveur** : VPS Linux
 - **Reverse Proxy** : Caddy (HTTPS auto)
 - **CI/CD** : GitHub Actions
-- **Monitoring** : À définir
-
----
-
-## 📈 Scalabilité (Future)
-
-### Horizontal Scaling
-
-- **Load Balancer** : Nginx/Caddy
-- **Multiple instances** : PM2 cluster mode
-- **Session** : Redis pour shared sessions
-
-### Vertical Scaling
-
-- **DB** : PostgreSQL peut scale jusqu'à plusieurs TB
-- **Cache** : Redis pour queries fréquentes
-- **CDN** : Pour assets statiques
-
----
-
-## 🔧 Outils de Développement
-
-- **Nodemon** : Auto-reload backend
-- **ESLint** : Linting code
-- **Prettier** : Formatage (optionnel)
-- **Vitest** : Tests rapides
-- **Postman/Thunder Client** : Test API
 
 ---
 

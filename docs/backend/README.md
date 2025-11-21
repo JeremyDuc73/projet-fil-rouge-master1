@@ -6,12 +6,12 @@ API REST Node.js/Express fournissant tous les endpoints pour l'application CineZ
 
 ## 🛠️ Stack Technique
 
-- **Runtime** : Node.js 23.x
-- **Framework** : Express 5.x
-- **Database** : PostgreSQL 16
+- **Runtime** : Node.js 
+- **Framework** : Express
+- **Database** : PostgreSQL
 - **Auth** : JSON Web Tokens (JWT)
 - **File Upload** : Multer
-- **Tests** : Vitest + Supertest
+- **Tests** : Vitest
 - **Validation** : Contraintes DB + validation manuelle
 
 ---
@@ -31,50 +31,6 @@ src/
 ├── server.js           # Point d'entrée
 └── db.js               # Connexion PostgreSQL
 ```
-
----
-
-## 🚀 Démarrage Rapide
-
-### Installation
-
-```bash
-cd apps/backend
-npm install
-```
-
-### Configuration
-
-```bash
-cp .env.example .env
-# Éditer .env avec vos valeurs
-```
-
-### Base de Données
-
-```bash
-# Initialiser la DB
-npm run db:init
-
-# Ou manuellement
-psql -U postgres
-CREATE DATABASE cinezone_db;
-\c cinezone_db
-\i database/schema.sql
-\i database/seed.sql  # Optionnel
-```
-
-### Lancement
-
-```bash
-# Mode développement (avec nodemon)
-npm run dev
-
-# Mode production
-npm start
-```
-
-L'API sera disponible sur `http://localhost:3001`
 
 ---
 
@@ -140,33 +96,9 @@ router.delete('/admin-only', authenticate, requireAdmin, (req, res) => {
 
 Voir [Database Schema](./database.md) pour le schéma complet.
 
-### Connexion
-
-```javascript
-import { query } from './db.js'
-
-const result = await query('SELECT * FROM users WHERE id = $1', [userId])
-```
-
-### Transactions
-
-```javascript
-await query('BEGIN')
-try {
-  await query('INSERT INTO ...')
-  await query('UPDATE ...')
-  await query('COMMIT')
-} catch (error) {
-  await query('ROLLBACK')
-  throw error
-}
-```
-
 ---
 
 ## ⚙️ Services
-
-Voir [Services Documentation](./services.md) pour la logique métier.
 
 **Pattern** :
 - Services = Logique métier pure
@@ -216,8 +148,6 @@ tests/
     └── *.routes.test.js   # Tests API complètes
 ```
 
-Voir [Testing Documentation](../testing/unit-tests.md) pour plus de détails.
-
 ---
 
 ## 📝 Conventions de Code
@@ -259,90 +189,8 @@ throw new NotFoundError('Movie not found')
 
 ---
 
-## 🔧 Configuration
-
-### Variables d'Environnement
-
-```env
-# Server
-NODE_ENV=development
-PORT=3001
-
-# Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=cinezone_db
-DB_USER=postgres
-DB_PASSWORD=your_password
-
-# JWT
-JWT_SECRET=your_jwt_secret
-JWT_REFRESH_SECRET=your_refresh_secret
-JWT_EXPIRES_IN=1h
-JWT_REFRESH_EXPIRES_IN=7d
-
-# TMDB
-TMDB_API_KEY=your_tmdb_api_key
-
-# Bcrypt
-BCRYPT_SALT_ROUNDS=10
-```
-
----
-
-## 📊 Logs & Monitoring
-
-### Logs (Console en dev)
-
-```javascript
-console.log('Info:', data)
-console.error('Error:', error)
-```
-
-### Health Check
-
-```
-GET /health
-```
-
-**À venir** : Winston pour logs structurés, Sentry pour tracking erreurs.
-
----
-
-## 🚀 Déploiement
-
-### Build
-
-```bash
-# Aucun build nécessaire (Node.js)
-npm install --production
-```
-
-### Start
-
-```bash
-NODE_ENV=production npm start
-```
-
-### Docker
-
-```dockerfile
-FROM node:23-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --production
-COPY . .
-EXPOSE 3001
-CMD ["npm", "start"]
-```
-
-Voir [Docker Documentation](../deployment/docker.md) pour plus de détails.
-
----
-
 ## 📚 Ressources
 
 - [API Reference](./api-reference.md)
 - [Database Schema](./database.md)
-- [Services Documentation](./services.md)
 - [← Retour](../../README.md)

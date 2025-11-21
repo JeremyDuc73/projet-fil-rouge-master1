@@ -20,5 +20,3 @@ npm test
 - ✅ **Frontend** : 9/9 tests (Stores, Utils)
 
 Les tests d'intégration backend couvrent déjà les parcours API complets.
-
-Voir sous-sections pour détails.
