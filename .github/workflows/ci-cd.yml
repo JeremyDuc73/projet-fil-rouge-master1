@@ -1,0 +1,125 @@
+name: 🚀 CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ===================================================
+  # 1. TESTS & LINT (Backend + Frontend)
+  # ===================================================
+  tests:
+    name: 🧪 Run Tests & Lint
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: cinezone_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Installation correcte de PNPM
+      - name: 🟢 Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      # Installation unique pour tout le monorepo
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Backend Tests
+      - name: 🗄️ Setup test database
+        working-directory: apps/backend
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: cinezone_test
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+        run: pnpm run db:init
+
+      - name: 🧪 Run Backend Tests
+        working-directory: apps/backend
+        env:
+          NODE_ENV: test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: cinezone_test
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          JWT_SECRET: test_secret
+          JWT_REFRESH_SECRET: test_refresh_secret
+        run: pnpm test
+
+      # Frontend Tests
+      - name: 🧪 Run Frontend Tests
+        working-directory: apps/frontend
+        run: pnpm test:unit # Assurez-vous que ce script existe dans package.json
+
+      # Linting (Sans le || true pour bloquer si erreurs)
+      - name: 🔍 Lint Code
+        run: pnpm run lint
+
+  # ===================================================
+  # 2. DEPLOY (Seulement si les tests passent)
+  # ===================================================
+  deploy:
+    name: 🚀 Deploy to VPS
+    needs: tests # C'est ICI la clé : on attend que les tests soient OK
+    if: github.ref == 'refs/heads/main' # Seulement sur la branche main
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: 🔐 Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: 📝 Add VPS to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: 🚀 Execute Deploy Script via SSH
+        env:
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          APP_DIR: /var/www/cinezone
+        run: |
+          ssh $VPS_USER@$VPS_HOST << 'EOF'
+            cd ${{ env.APP_DIR }}
+          
+            echo "🔄 Pulling latest code..."
+            git pull origin main
+          
+            # S'assurer que le script est exécutable
+            chmod +x scripts/deploy.sh
+          
+            echo "🔨 Building and deploying..."
+            bash scripts/deploy.sh
+          
+            echo "✅ Deployment completed!"
+          EOF
