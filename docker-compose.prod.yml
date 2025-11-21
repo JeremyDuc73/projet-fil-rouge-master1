@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - /var/lib/cinezone/postgres:/var/lib/postgresql/data
       - ./apps/backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
       - ./apps/backend/database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
     healthcheck:
