@@ -73,11 +73,13 @@
 
         <!-- Actions -->
         <div ref="actionsRef" class="flex flex-wrap gap-4 opacity-0">
+          <!-- Only show "Plus d'infos" if we're NOT on the detail page -->
           <UButton
+            v-if="!isDetailPage"
             @click="goToMovie"
             size="xl"
             color="white"
-            class="font-bold backdrop-blur-sm"
+            class="font-bold backdrop-blur-md cursor-pointer hover:opacity-80"
           >
             <Icon name="ph:info" class="w-5 h-5 mr-2" />
             Plus d'infos
@@ -117,9 +119,13 @@
     </div>
 
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-      <Icon name="ph:caret-down" class="w-8 h-8 text-white/50" />
-    </div>
+    <button 
+      @click="scrollToContent"
+      class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer hover:text-white transition-colors"
+      title="Défiler vers le bas"
+    >
+      <Icon name="ph:caret-down" class="w-8 h-8 text-white/50 hover:text-white" />
+    </button>
   </div>
 </template>
 
@@ -136,10 +142,14 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
+const route = useRoute()
 const toast = useToast()
 const { isAuthenticated } = useAuth()
 const favoritesStore = useFavoritesStore()
 const watchlistStore = useWatchlistStore()
+
+// Check if we're on the detail page
+const isDetailPage = computed(() => route.path.startsWith('/movies/') && route.params.id)
 
 const titleRef = ref<HTMLElement | null>(null)
 const metaRef = ref<HTMLElement | null>(null)
@@ -193,7 +203,14 @@ const handleImageError = (event: Event) => {
 }
 
 const goToMovie = () => {
-  router.push(`/movies/${props.movie.id}`)
+  router.push(getMovieUrl(props.movie.id, props.movie.title))
+}
+
+const scrollToContent = () => {
+  window.scrollTo({
+    top: window.innerHeight * 0.7, // Scroll to 70vh (height of hero)
+    behavior: 'smooth'
+  })
 }
 
 const toggleFavorite = async () => {

@@ -28,7 +28,7 @@
           <select
             v-model="localCategory"
             @change="handleCategoryChange"
-            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+            class="cursor-pointer w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
           >
             <option :value="null">Toutes les catégories</option>
             <option
@@ -46,7 +46,7 @@
           <select
             v-model="localMinRating"
             @change="handleRatingChange"
-            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+            class="cursor-pointer w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
           >
             <option :value="null">Note minimum</option>
             <option :value="9">9+ ⭐</option>
@@ -62,7 +62,7 @@
           <select
             v-model="localSort"
             @change="handleSortChange"
-            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+            class="cursor-pointer w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
           >
             <option value="created_at:DESC">Plus récents</option>
             <option value="created_at:ASC">Plus anciens</option>

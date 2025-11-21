@@ -153,7 +153,7 @@ const handleImageError = (event: Event) => {
 }
 
 const goToMovie = () => {
-  router.push(`/movies/${props.movie.id}`)
+  router.push(getMovieUrl(props.movie.id, props.movie.title))
 }
 
 const toggleFavorite = async () => {

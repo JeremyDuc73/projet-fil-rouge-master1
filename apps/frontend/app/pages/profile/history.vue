@@ -18,6 +18,7 @@
         variant="outline"
         @click="openClearModal"
         icon="ph:trash"
+        class="cursor-pointer"
       >
         Effacer l'historique
       </UButton>
@@ -51,7 +52,7 @@
         v-for="item in history"
         :key="item.id"
         class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden group cursor-pointer"
-        @click="navigateToMovie(item.id)"
+        @click="navigateToMovie(item.id, item.title)"
       >
         <div class="flex gap-4 p-4">
           <!-- Poster -->
@@ -166,14 +167,14 @@
         <div class="flex gap-3 justify-end">
           <button
             @click="showClearModal = false"
-            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            class="cursor-pointer px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
             Annuler
           </button>
           <button
             @click="handleClearHistory"
             :disabled="isClearing"
-            class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50"
+            class="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50"
           >
             {{ isClearing ? 'Suppression...' : 'Effacer' }}
           </button>
@@ -215,8 +216,8 @@ onMounted(async () => {
   }
 })
 
-const navigateToMovie = (movieId: number) => {
-  router.push(`/movies/${movieId}`)
+const navigateToMovie = (movieId: number, title: string) => {
+  router.push(getMovieUrl(movieId, title))
 }
 
 const openClearModal = () => {

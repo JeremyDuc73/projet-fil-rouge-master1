@@ -16,7 +16,7 @@
                 :key="tab.value"
                 @click="activeTab = tab.value"
                 :class="[
-                  'flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors',
+                  'cursor-pointer flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors',
                   activeTab === tab.value
                     ? 'border-primary-500 text-primary-600 dark:text-primary-400'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
@@ -133,7 +133,7 @@
               <button
                 v-if="movie.status === 'to_watch'"
                 @click="updateStatus(movie.id, 'watched')"
-                class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
+                class="cursor-pointer flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
               >
                 <Icon name="ph:check" class="w-4 h-4" />
                 Vu
@@ -141,7 +141,7 @@
               <button
                 v-if="movie.status === 'to_watch'"
                 @click="updateStatus(movie.id, 'dropped')"
-                class="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
+                class="cursor-pointer flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
               >
                 <Icon name="ph:x" class="w-4 h-4" />
                 Abandonner
@@ -149,7 +149,7 @@
               <button
                 v-if="movie.status !== 'to_watch'"
                 @click="updateStatus(movie.id, 'to_watch')"
-                class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
+                class="cursor-pointer flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
               >
                 <Icon name="ph:arrow-counter-clockwise" class="w-4 h-4" />
                 À voir

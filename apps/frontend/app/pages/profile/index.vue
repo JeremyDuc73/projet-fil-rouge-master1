@@ -150,6 +150,7 @@
           <UButton
             type="submit"
             color="primary"
+            class="cursor-pointer"
             :loading="isUpdatingProfile"
             :disabled="!isProfileFormDirty"
           >
@@ -213,6 +214,7 @@
 
         <div class="flex justify-end">
           <UButton
+            class="cursor-pointer"
             type="submit"
             color="primary"
             :loading="isChangingPassword"

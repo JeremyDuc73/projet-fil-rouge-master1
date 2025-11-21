@@ -35,7 +35,7 @@
                 :variant="isFavorite ? 'solid' : 'outline'"
                 :loading="isTogglingFavorite"
                 @click="handleToggleFavorite"
-                class="transition-all"
+                class="transition-all cursor-pointer hover:opacity-80"
               >
                 <Icon 
                   :name="isFavorite ? 'ph:heart-fill' : 'ph:heart'" 
@@ -53,7 +53,7 @@
                   variant="outline"
                   :loading="isTogglingWatchlist"
                   @click="handleToggleWatchlist"
-                  class="transition-all"
+                  class="transition-all cursor-pointer hover:opacity-80"
                 >
                   <Icon 
                     name="ph:bookmark-simple" 
@@ -97,7 +97,7 @@
                   <button
                     @click="handleRemoveFromWatchlist"
                     :disabled="isTogglingWatchlist"
-                    class="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium"
+                    class="cursor-pointer text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium"
                   >
                     Retirer
                   </button>
@@ -109,7 +109,7 @@
                     v-if="movieStatus !== 'to_watch'"
                     @click="handleUpdateStatus('to_watch')"
                     :disabled="isUpdatingStatus"
-                    class="px-3 py-2 text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-900 dark:text-blue-100 rounded-lg transition-colors disabled:opacity-50 flex flex-col items-center"
+                    class="cursor-pointer px-3 py-2 text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-900 dark:text-blue-100 rounded-lg transition-colors disabled:opacity-50 flex flex-col items-center"
                   >
                     <Icon name="ph:eye" class="w-4 h-4 mb-1" />
                     <span>À voir</span>
@@ -118,7 +118,7 @@
                     v-if="movieStatus !== 'watched'"
                     @click="handleUpdateStatus('watched')"
                     :disabled="isUpdatingStatus"
-                    class="px-3 py-2 text-sm bg-green-100 hover:bg-green-200 dark:bg-green-900/30 dark:hover:bg-green-900/50 text-green-900 dark:text-green-100 rounded-lg transition-colors disabled:opacity-50 flex flex-col items-center"
+                    class="cursor-pointer px-3 py-2 text-sm bg-green-100 hover:bg-green-200 dark:bg-green-900/30 dark:hover:bg-green-900/50 text-green-900 dark:text-green-100 rounded-lg transition-colors disabled:opacity-50 flex flex-col items-center"
                   >
                     <Icon name="ph:check-circle" class="w-4 h-4 mb-1" />
                     <span>Vu</span>
@@ -127,7 +127,7 @@
                     v-if="movieStatus !== 'dropped'"
                     @click="handleUpdateStatus('dropped')"
                     :disabled="isUpdatingStatus"
-                    class="px-3 py-2 text-sm bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-900 dark:text-red-100 rounded-lg transition-colors disabled:opacity-50 flex flex-col items-center"
+                    class="cursor-pointer px-3 py-2 text-sm bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-900 dark:text-red-100 rounded-lg transition-colors disabled:opacity-50 flex flex-col items-center"
                   >
                     <Icon name="ph:x-circle" class="w-4 h-4 mb-1" />
                     <span>Abandonné</span>
@@ -309,7 +309,7 @@
             <div v-if="!myReview && !showReviewForm">
               <button
                 @click="showReviewForm = true"
-                class="w-full sm:w-auto px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                class="cursor-pointer w-full sm:w-auto px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 <Icon name="ph:pencil" class="w-5 h-5" />
                 Écrire un avis
@@ -335,7 +335,7 @@
                 </div>
                 <button
                   @click="editingReview = true"
-                  class="text-sm text-green-700 dark:text-green-300 hover:underline"
+                  class="cursor-pointer text-sm text-green-700 dark:text-green-300 hover:underline"
                 >
                   Modifier
                 </button>
@@ -453,7 +453,8 @@ const reviewToDelete = ref<any>(null)
 const showDeleteModal = ref(false)
 const isDeletingReview = ref(false)
 
-const movieId = Number(route.params.id)
+// Extract movie ID from URL (handles both "123" and "123-slug-title")
+const movieId = extractMovieId(route.params.id)
 
 const isFavorite = computed(() => favoritesStore.isFavorite(movieId))
 const isInWatchlist = computed(() => watchlistStore.isInWatchlist(movieId))

@@ -1,6 +1,11 @@
+// Global flag to prevent multiple unauthorized handlers
+let isHandlingUnauthorized = false
+
+// Routes that don't require authentication
+const PUBLIC_ROUTES = ['/', '/movies', '/auth/login', '/auth/register']
+
 export class ApiClient {
   private baseURL: string
-  private isHandlingUnauthorized = false
 
   constructor(baseURL: string) {
     this.baseURL = baseURL
@@ -14,8 +19,8 @@ export class ApiClient {
   }
 
   private handleUnauthorized() {
-    if (process.client && !this.isHandlingUnauthorized) {
-      this.isHandlingUnauthorized = true
+    if (process.client && !isHandlingUnauthorized) {
+      isHandlingUnauthorized = true
       
       // Clear auth state using the store
       const authStore = useAuthStore()
@@ -42,13 +47,22 @@ export class ApiClient {
         icon: 'ph:warning'
       })
       
-      // Redirect to login
-      navigateTo('/auth/login')
+      // Only redirect to login if we're on a protected route
+      const router = useRouter()
+      const currentPath = router.currentRoute.value.path
       
-      // Reset flag after a short delay
+      const isPublicRoute = PUBLIC_ROUTES.some(route => 
+        currentPath === route || currentPath.startsWith('/movies/')
+      )
+      
+      if (!isPublicRoute) {
+        navigateTo('/auth/login')
+      }
+      
+      // Reset flag after a delay
       setTimeout(() => {
-        this.isHandlingUnauthorized = false
-      }, 1000)
+        isHandlingUnauthorized = false
+      }, 3000)
     }
   }
 

@@ -9,7 +9,7 @@
         v-for="movie in movies"
         :key="movie.id"
         :movie="movie"
-        class="movie-card-item"
+        class="movie-card-item opacity-0"
       />
     </div>
 
@@ -36,18 +36,9 @@
     <div 
       v-if="hasMore && autoLoad && movies.length > 0 && !isLoading" 
       ref="observerTarget" 
-      class="h-96 flex items-center justify-center border-2 border-dashed border-primary-500/30 rounded-lg my-8 bg-primary-500/5"
+      class="h-32 flex items-center justify-center my-8"
     >
-      <div class="text-center">
-        <Icon name="ph:arrow-down" class="w-8 h-8 mx-auto mb-2 text-primary-500 animate-bounce" />
-        <p class="text-gray-600 dark:text-gray-400 font-medium">Scroll pour charger plus de films</p>
-        <p class="text-gray-400 text-sm mt-1">{{ movies.length }} / {{ pagination.total }} films</p>
-        <div class="mt-4 text-xs text-gray-500 font-mono">
-          <div>hasMore: {{ hasMore }}</div>
-          <div>isLoadingMore: {{ isLoadingMore }}</div>
-          <div>autoLoad: {{ autoLoad }}</div>
-        </div>
-      </div>
+      <Icon name="ph:arrow-down" class="w-8 h-8 text-primary-500 animate-bounce" />
     </div>
 
     <!-- No Results -->
