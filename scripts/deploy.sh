@@ -23,22 +23,32 @@ NC='\033[0m' # No Color
 cd "$APP_DIR"
 
 echo -e "${BLUE}📦 Pulling latest code...${NC}"
-git pull origin master
+git pull origin master  # <-- Assurez-vous que c'est bien 'master' ici
+
+# --- AJOUT ICI : CHARGEMENT DU .ENV ---
+if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs)
+else
+    echo -e "${RED}⚠️  Warning: .env file not found! Backup might fail.${NC}"
+fi
+# --------------------------------------
 
 # Backup database
 if [ "$1" != "--skip-backup" ]; then
     echo -e "${BLUE}💾 Backing up database...${NC}"
     mkdir -p "$BACKUP_DIR"
+    # Maintenant $DB_USER et $DB_NAME seront connus
     docker exec cinezone-postgres pg_dump -U $DB_USER $DB_NAME | gzip > "$BACKUP_DIR/db_backup_$TIMESTAMP.sql.gz"
     echo -e "${GREEN}✅ Database backup created${NC}"
-    
+
     # Keep only last 7 backups
     ls -t "$BACKUP_DIR"/db_backup_*.sql.gz | tail -n +8 | xargs -r rm
 fi
 
 # Build new images
 echo -e "${BLUE}🔨 Building Docker images...${NC}"
-docker compose -f docker-compose.prod.yml build --no-cache
+# Ajout du flag --pull pour être sûr d'avoir les dernières versions de Node/Alpine
+docker compose -f docker-compose.prod.yml build --no-cache --pull
 
 # Stop old containers
 echo -e "${BLUE}⏹️  Stopping old containers...${NC}"
@@ -52,12 +62,11 @@ docker compose -f docker-compose.prod.yml up -d
 echo -e "${BLUE}🏥 Waiting for services to be healthy...${NC}"
 sleep 10
 
-# Check if services are up
-if docker compose -f docker-compose.prod.yml ps | grep -q "unhealthy\|exited"; then
-    echo -e "${RED}❌ Deployment failed! Services are not healthy.${NC}"
-    echo "Rolling back..."
-    # Optionally restore from backup here
-    exit 1
+# Check if services are up (Amélioration de la vérification)
+if [ -z "$(docker compose -f docker-compose.prod.yml ps -q)" ] || [ -n "$(docker compose -f docker-compose.prod.yml ps -q | xargs docker inspect -f '{{.State.Status}}' | grep -v 'running')" ]; then
+     echo -e "${RED}❌ Deployment failed! Some services are not running.${NC}"
+     docker compose -f docker-compose.prod.yml logs --tail=50
+     exit 1
 fi
 
 # Clean up old images
@@ -66,7 +75,3 @@ docker image prune -f
 
 echo -e "${GREEN}✅ Deployment completed successfully!${NC}"
 echo -e "${GREEN}🌐 Application is live at: https://cinezone.jeremyduc.dev${NC}"
-
-# Show logs
-echo -e "${BLUE}📋 Recent logs:${NC}"
-docker compose -f docker-compose.prod.yml logs --tail=20
