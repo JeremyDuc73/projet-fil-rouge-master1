@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="max-w-full min-w-0 overflow-x-hidden">
     <ClientOnly>
       <!-- Stats Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <!-- Total Movies -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
           <div class="flex items-center justify-between">
@@ -65,14 +65,14 @@
       </div>
 
       <!-- Recent Movies -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 mb-6 sm:mb-8 min-w-0">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+          <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
             Films récents
           </h2>
           <NuxtLink
             to="/admin/movies"
-            class="text-primary-600 dark:text-primary-400 hover:underline text-sm font-medium"
+            class="text-primary-600 dark:text-primary-400 hover:underline text-sm font-medium shrink-0 self-start sm:self-auto"
           >
             Voir tous
           </NuxtLink>
@@ -88,28 +88,30 @@
           </div>
         </div>
 
-        <div v-else class="space-y-4">
+        <div v-else class="space-y-3 sm:space-y-4">
           <div
             v-for="movie in recentMovies"
             :key="movie.id"
-            class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors min-w-0"
           >
-            <img
-              :src="movie.poster_url"
-              :alt="movie.title"
-              class="w-16 h-24 object-cover rounded"
-            />
-            <div class="flex-1">
-              <h3 class="font-semibold text-gray-900 dark:text-white">
-                {{ movie.title }}
-              </h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400">
-                {{ movie.release_year }}
-              </p>
+            <div class="flex gap-4 min-w-0 flex-1">
+              <img
+                :src="movie.poster_url"
+                :alt="movie.title"
+                class="w-14 h-20 sm:w-16 sm:h-24 object-cover rounded shrink-0"
+              />
+              <div class="flex-1 min-w-0">
+                <h3 class="font-semibold text-gray-900 dark:text-white line-clamp-2">
+                  {{ movie.title }}
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  {{ movie.release_year }}
+                </p>
+              </div>
             </div>
             <NuxtLink
               :to="`/admin/movies/${movie.id}/edit`"
-              class="text-primary-600 dark:text-primary-400 hover:underline text-sm"
+              class="text-primary-600 dark:text-primary-400 hover:underline text-sm shrink-0 self-end sm:self-auto sm:ml-auto"
             >
               Modifier
             </NuxtLink>
@@ -122,12 +124,12 @@
       </div>
 
       <!-- Quick Actions -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 min-w-0">
+        <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
           Actions rapides
         </h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           <NuxtLink
             to="/admin/movies/create"
             class="flex items-center gap-3 p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary-500 dark:hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors cursor-pointer"
