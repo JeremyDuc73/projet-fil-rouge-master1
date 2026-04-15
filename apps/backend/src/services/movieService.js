@@ -19,25 +19,35 @@ class MovieService {
     }
 
     async createMovie(data) {
-        this.validateMovieData(data);
+        const duration =
+            data.duration === undefined || data.duration === null ? undefined : Number(data.duration);
+        const categoryIds = Array.isArray(data.categoryIds)
+            ? data.categoryIds.map((id) => Number(id)).filter((n) => Number.isInteger(n) && n >= 1)
+            : [];
 
-        if (data.categoryIds && data.categoryIds.length > 0) {
-            await this.validateCategories(data.categoryIds);
+        const normalized = {
+            ...data,
+            title: typeof data.title === 'string' ? data.title : data.title != null ? String(data.title) : '',
+            duration: duration !== undefined && Number.isFinite(duration) ? duration : undefined,
+            categoryIds
+        };
+
+        this.validateMovieData(normalized);
+
+        if (categoryIds.length > 0) {
+            await this.validateCategories(categoryIds);
         }
 
         const movieData = {
-            title: data.title,
-            description: data.description,
-            release_date: data.release_date,
-            duration: data.duration,
-            poster_url: data.poster_url,
-            backdrop_url: data.backdrop_url
+            title: normalized.title,
+            description: normalized.description,
+            release_date: normalized.release_date,
+            duration: normalized.duration,
+            poster_url: normalized.poster_url,
+            backdrop_url: normalized.backdrop_url
         };
 
-        const movie = await movieRepository.createWithCategories(
-            movieData,
-            data.categoryIds || []
-        );
+        const movie = await movieRepository.createWithCategories(movieData, categoryIds);
 
         return movie;
     }

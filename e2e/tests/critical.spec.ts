@@ -75,30 +75,41 @@ test.describe('Parcours critiques', () => {
     await page.goto('/admin/movies/create')
 
     const title = `E2E Create ${Date.now()}`
+    const description = 'Description créée par Playwright.'
     await page.getByTestId('admin-movie-title').fill(title)
-    await page.getByTestId('admin-movie-description').fill('Description créée par Playwright.')
+    await page.getByTestId('admin-movie-description').fill(description)
     await page.getByTestId('admin-movie-release').fill('2024-06-01')
     await page.getByTestId('admin-movie-duration').fill('100')
+    await expect(page.getByTestId('admin-movie-title')).toHaveValue(title)
+    await expect(page.getByTestId('admin-movie-description')).toHaveValue(description)
+    await expect(page.getByTestId('admin-movie-release')).toHaveValue('2024-06-01')
     await expect(page.getByTestId('admin-movie-duration')).toHaveValue('100')
     const categorySelect = page.getByTestId('admin-movie-category')
     await expect(categorySelect.locator('option[value]:not([value=""])').first()).toBeAttached({
       timeout: 15_000,
     })
-    await categorySelect.selectOption({ index: 1 })
+    await categorySelect.selectOption({ label: 'Action' })
+    await expect(categorySelect).toHaveValue(/.+/)
 
     const createMovieResponse = page.waitForResponse(
       (res) => {
+        if (res.request().method() !== 'POST') return false
         try {
-          const pathname = new URL(res.url()).pathname
-          return pathname === '/api/movies' && res.request().method() === 'POST'
+          if (new URL(res.url()).pathname !== '/api/movies') return false
         } catch {
           return false
         }
+        const raw = res.request().postData()
+        // postData() peut être null selon le client ; le titre est unique dans ce test.
+        return raw != null && raw.includes(title)
       },
       { timeout: 30_000 }
     )
     await page.getByTestId('admin-movie-submit').click()
-    await expect((await createMovieResponse).status()).toBe(201)
+    const createRes = await createMovieResponse
+    if (createRes.status() !== 201) {
+      throw new Error(`POST /api/movies → ${createRes.status()}: ${await createRes.text()}`)
+    }
     // Ne pas utiliser /\/admin\/movies/ : ça matche aussi /admin/movies/create (sous-chaîne « /admin/movies/ »).
     await expect(page).toHaveURL(
       (url) => new URL(url).pathname.replace(/\/$/, '') === '/admin/movies',
