@@ -14,7 +14,7 @@ Write-Host ">>> Attente de l'API (http://localhost:3001/health)..."
 $ok = $false
 for ($i = 0; $i -lt 45; $i++) {
   try {
-    $r = Invoke-WebRequest -Uri "http://127.0.0.1:3001/health" -UseBasicParsing -TimeoutSec 3
+    $r = Invoke-WebRequest -Uri "http://localhost:3001/health" -UseBasicParsing -TimeoutSec 3
     if ($r.StatusCode -eq 200) { $ok = $true; break }
   } catch {}
   Start-Sleep -Seconds 2
@@ -42,7 +42,7 @@ npx playwright install chromium
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $env:E2E_SKIP_WEBSERVER = "1"
-$env:E2E_BASE_URL = "http://127.0.0.1:3000"
+$env:E2E_BASE_URL = "http://localhost:3000"
 $env:CI = ""
 
 Write-Host ">>> Tests E2E (stack externe, sans demarrer node dans Playwright)..."

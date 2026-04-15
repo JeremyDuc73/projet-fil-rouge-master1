@@ -1,4 +1,4 @@
-name: 🚀 CI/CD Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
   # Unit + integration + E2E (même base Postgres)
   # ===================================================
   validate:
-    name: 🧪 Tests & E2E
+    name: Tests and E2E
     runs-on: ubuntu-latest
 
     services:
@@ -33,24 +33,24 @@ jobs:
           - 5432:5432
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 🟢 Setup PNPM
+      - name: Setup PNPM
         uses: pnpm/action-setup@v3
         with:
           version: 9
 
-      - name: 🟢 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: 🗄️ Setup test database
+      - name: Setup test database
         working-directory: apps/backend
         env:
           DB_HOST: localhost
@@ -60,7 +60,7 @@ jobs:
           DB_PASSWORD: postgres
         run: pnpm run db:init
 
-      - name: 🧪 Run Backend Tests
+      - name: Run Backend Tests
         working-directory: apps/backend
         env:
           NODE_ENV: test
@@ -73,11 +73,11 @@ jobs:
           JWT_REFRESH_SECRET: test_refresh_secret
         run: pnpm test
 
-      - name: 🧪 Run Frontend Tests
+      - name: Run Frontend Tests
         working-directory: apps/frontend
         run: pnpm test
 
-      - name: 🌱 Seed E2E data
+      - name: Seed E2E data
         working-directory: apps/backend
         env:
           DB_HOST: localhost
@@ -88,10 +88,10 @@ jobs:
           E2E_PASSWORD: ${{ env.E2E_PASSWORD }}
         run: pnpm run seed:e2e
 
-      - name: 🎭 Install Playwright (Chromium)
+      - name: Install Playwright (Chromium)
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: 🎭 Run E2E (Playwright)
+      - name: Run E2E (Playwright)
         env:
           CI: true
           DB_HOST: localhost
@@ -102,11 +102,11 @@ jobs:
           JWT_SECRET: e2e_ci_jwt_secret
           JWT_REFRESH_SECRET: e2e_ci_refresh_secret
           E2E_PASSWORD: ${{ env.E2E_PASSWORD }}
-          NUXT_PUBLIC_API_BASE: http://127.0.0.1:3001/api
-          NUXT_PUBLIC_API_URL: http://127.0.0.1:3001
+          NUXT_PUBLIC_API_BASE: http://localhost:3001/api
+          NUXT_PUBLIC_API_URL: http://localhost:3001
         run: pnpm run test:e2e
 
-      - name: 📎 Upload Playwright report
+      - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -118,24 +118,24 @@ jobs:
   # DEPLOY (master uniquement, après validation)
   # ===================================================
   deploy:
-    name: 🚀 Deploy to VPS
+    name: Deploy to VPS
     needs: validate
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment: production
 
     steps:
-      - name: 🔐 Setup SSH
+      - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: 📝 Add VPS to known hosts
+      - name: Add VPS to known hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: 🚀 Execute Deploy Script via SSH
+      - name: Execute Deploy Script via SSH
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
@@ -144,11 +144,11 @@ jobs:
           ssh $VPS_USER@$VPS_HOST << 'EOF'
             cd ${{ env.APP_DIR }}
           
-            echo "🔄 Pulling latest code..."
+            echo "Pulling latest code..."
             git pull origin master
           
-            echo "🔨 Building and deploying..."
+            echo "Building and deploying..."
             bash scripts/deploy.sh
           
-            echo "✅ Deployment completed!"
+            echo "Deployment completed."
           EOF

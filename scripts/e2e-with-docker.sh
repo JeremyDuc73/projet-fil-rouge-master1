@@ -9,10 +9,10 @@ cd "$ROOT"
 echo ">>> Démarrage Docker..."
 docker compose up -d
 
-echo ">>> Attente backend http://127.0.0.1:3001/health ..."
+echo ">>> Attente backend http://localhost:3001/health ..."
 ok=0
 for i in $(seq 1 45); do
-  if curl -sf "http://127.0.0.1:3001/health" >/dev/null; then
+  if curl -sf "http://localhost:3001/health" >/dev/null; then
     ok=1
     break
   fi
@@ -35,7 +35,7 @@ echo ">>> Playwright Chromium..."
 npx playwright install chromium
 
 export E2E_SKIP_WEBSERVER=1
-export E2E_BASE_URL="${E2E_BASE_URL:-http://127.0.0.1:3000}"
+export E2E_BASE_URL="${E2E_BASE_URL:-http://localhost:3000}"
 unset CI
 
 echo ">>> Tests E2E..."

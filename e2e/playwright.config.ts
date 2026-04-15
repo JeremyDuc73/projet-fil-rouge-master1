@@ -18,9 +18,10 @@ const backendEnv = {
   E2E_PASSWORD: process.env.E2E_PASSWORD ?? 'E2E_Test_Pass_1!',
 }
 
+/** Même host que CORS par défaut du backend (localhost:3000), pas 127.0.0.1 — sinon Origin bloquée. */
 const frontendEnv = {
-  NUXT_PUBLIC_API_BASE: process.env.NUXT_PUBLIC_API_BASE ?? 'http://127.0.0.1:3001/api',
-  NUXT_PUBLIC_API_URL: process.env.NUXT_PUBLIC_API_URL ?? 'http://127.0.0.1:3001',
+  NUXT_PUBLIC_API_BASE: process.env.NUXT_PUBLIC_API_BASE ?? 'http://localhost:3001/api',
+  NUXT_PUBLIC_API_URL: process.env.NUXT_PUBLIC_API_URL ?? 'http://localhost:3001',
 }
 
 /** Stack déjà démarrée (ex. docker compose) : pas de webServer intégré */
@@ -32,7 +33,7 @@ const webServers = useExternalStack
       {
         command: 'node src/server.js',
         cwd: path.join(repoRoot, 'apps/backend'),
-        url: 'http://127.0.0.1:3001/health',
+        url: 'http://localhost:3001/health',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
         env: { ...process.env, ...backendEnv },
@@ -40,7 +41,7 @@ const webServers = useExternalStack
       {
         command: 'pnpm run preview:e2e',
         cwd: path.join(repoRoot, 'apps/frontend'),
-        url: 'http://127.0.0.1:3000',
+        url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
         timeout: 300_000,
         env: { ...process.env, ...frontendEnv },
@@ -60,7 +61,7 @@ export default defineConfig({
   timeout: 60_000,
   expect: { timeout: 15_000 },
   use: {
-    baseURL: process.env.E2E_BASE_URL ?? 'http://127.0.0.1:3000',
+    baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: process.env.CI ? 'retain-on-failure' : 'off',
