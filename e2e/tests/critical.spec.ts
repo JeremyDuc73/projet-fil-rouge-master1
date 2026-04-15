@@ -79,6 +79,7 @@ test.describe('Parcours critiques', () => {
     await page.getByTestId('admin-movie-description').fill('Description créée par Playwright.')
     await page.getByTestId('admin-movie-release').fill('2024-06-01')
     await page.getByTestId('admin-movie-duration').fill('100')
+    await expect(page.getByTestId('admin-movie-duration')).toHaveValue('100')
     const categorySelect = page.getByTestId('admin-movie-category')
     await expect(categorySelect.locator('option[value]:not([value=""])').first()).toBeAttached({
       timeout: 15_000,

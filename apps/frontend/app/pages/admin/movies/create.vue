@@ -132,6 +132,8 @@
 </template>
 
 <script setup lang="ts">
+import { nextTick } from 'vue'
+
 definePageMeta({
   middleware: ['auth', 'admin'],
   layout: 'admin'
@@ -196,17 +198,34 @@ onMounted(async () => {
 })
 
 const handleSubmit = async () => {
+  await nextTick()
   loading.value = true
   try {
-    // 1. Créer le film
-    const payload = {
-      title: form.title,
-      description: form.description,
-      release_date: form.release_date,
-      duration: form.duration_minutes,
-      categoryIds: form.category_id ? [parseInt(form.category_id as any)] : []
+    const durationNum = Number(form.duration_minutes)
+    if (!Number.isFinite(durationNum) || durationNum < 1 || durationNum > 1000) {
+      toast.add({
+        title: 'Erreur',
+        description: 'Indiquez une durée valide (1 à 1000 minutes).',
+        color: 'red',
+        icon: 'ph:x-circle'
+      })
+      return
     }
-    
+
+    const categoryIdNum = parseInt(String(form.category_id), 10)
+    const categoryIds =
+      Number.isFinite(categoryIdNum) && categoryIdNum >= 1 ? [categoryIdNum] : []
+
+    const release = form.release_date?.trim()
+    // 1. Créer le film — éviter duration: 0 / NaN (JSON.stringify(NaN) → null → 400 côté API)
+    const payload = {
+      title: form.title.trim(),
+      description: form.description.trim(),
+      ...(release ? { release_date: release } : {}),
+      duration: Math.floor(durationNum),
+      ...(categoryIds.length ? { categoryIds } : {})
+    }
+
     const response = await api.post('/movies', payload)
     const movieId = response.data.id
     
