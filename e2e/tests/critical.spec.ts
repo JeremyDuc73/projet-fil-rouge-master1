@@ -8,10 +8,30 @@ const E2E_PASSWORD = process.env.E2E_PASSWORD ?? 'E2E_Test_Pass_1!'
 
 async function login(page: Page, email: string, password: string) {
   await page.goto('/auth/login')
+  await expect(page.getByTestId('login-email')).toBeVisible()
   await page.getByTestId('login-email').fill(email)
   await page.getByTestId('login-password').fill(password)
+
+  const loginResPromise = page.waitForResponse(
+    (res) =>
+      res.url().includes('/api/auth/login') &&
+      res.request().method() === 'POST',
+    { timeout: 30_000 }
+  )
   await page.getByRole('button', { name: 'Se connecter' }).click()
-  await expect(page).toHaveURL(/\/($|\?)/, { timeout: 20_000 })
+  const loginRes = await loginResPromise
+  if (!loginRes.ok()) {
+    throw new Error(`Login API ${loginRes.status()}: ${await loginRes.text()}`)
+  }
+
+  // Attendre la navigation client (Vue Router), pas seulement le regex sur « / » (plus fiable que toHaveURL seul).
+  await page.waitForURL(
+    (url) => {
+      const p = new URL(url).pathname
+      return !p.startsWith('/auth')
+    },
+    { timeout: 25_000 }
+  )
 }
 
 test.describe('Parcours critiques', () => {
