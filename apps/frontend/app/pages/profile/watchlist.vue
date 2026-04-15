@@ -8,24 +8,26 @@
 
       <ClientOnly>
         <!-- Filter Tabs -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 mb-6 overflow-hidden">
           <div class="border-b border-gray-200 dark:border-gray-700">
-            <nav class="flex -mb-px">
+            <!-- Mobile : onglets empilés ; sm+ : ligne horizontale (évite le débordement « Abandonnés ») -->
+            <nav class="flex flex-col sm:flex-row sm:flex-nowrap -mb-px">
               <button
                 v-for="tab in tabs"
                 :key="tab.value"
+                type="button"
                 @click="activeTab = tab.value"
                 :class="[
-                  'cursor-pointer flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm transition-colors',
+                  'cursor-pointer w-full sm:flex-1 min-w-0 py-3 px-3 sm:py-4 sm:px-4 text-center border-b-2 sm:border-b-2 font-medium text-sm transition-colors',
                   activeTab === tab.value
-                    ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                    ? 'border-primary-500 text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/10 sm:bg-transparent'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
                 ]"
               >
-                <span class="flex items-center justify-center gap-2">
-                  <Icon :name="tab.icon" class="w-5 h-5" />
-                  {{ tab.label }}
-                  <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700">
+                <span class="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap sm:flex-nowrap">
+                  <Icon :name="tab.icon" class="w-5 h-5 shrink-0" />
+                  <span class="truncate max-w-[11rem] sm:max-w-none">{{ tab.label }}</span>
+                  <span class="shrink-0 px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 tabular-nums">
                     {{ stats[tab.value] || 0 }}
                   </span>
                 </span>
