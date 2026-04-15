@@ -79,9 +79,25 @@ test.describe('Parcours critiques', () => {
     await page.getByTestId('admin-movie-description').fill('Description créée par Playwright.')
     await page.getByTestId('admin-movie-release').fill('2024-06-01')
     await page.getByTestId('admin-movie-duration').fill('100')
-    await page.getByTestId('admin-movie-category').selectOption({ index: 1 })
+    const categorySelect = page.getByTestId('admin-movie-category')
+    await expect(categorySelect.locator('option[value]:not([value=""])').first()).toBeAttached({
+      timeout: 15_000,
+    })
+    await categorySelect.selectOption({ index: 1 })
 
+    const createMovieResponse = page.waitForResponse(
+      (res) => {
+        try {
+          const pathname = new URL(res.url()).pathname
+          return pathname === '/api/movies' && res.request().method() === 'POST'
+        } catch {
+          return false
+        }
+      },
+      { timeout: 30_000 }
+    )
     await page.getByTestId('admin-movie-submit').click()
+    await expect((await createMovieResponse).status()).toBe(201)
     // Ne pas utiliser /\/admin\/movies/ : ça matche aussi /admin/movies/create (sous-chaîne « /admin/movies/ »).
     await expect(page).toHaveURL(
       (url) => new URL(url).pathname.replace(/\/$/, '') === '/admin/movies',

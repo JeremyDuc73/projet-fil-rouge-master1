@@ -10,7 +10,8 @@
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-      <form @submit.prevent="handleSubmit" class="space-y-6">
+      <!-- novalidate : la validation navigateur peut bloquer submit avant @submit.prevent (race chargement catégories, durée initiale 0, etc.) ; l’API valide. -->
+      <form novalidate @submit.prevent="handleSubmit" class="space-y-6">
         <!-- Title -->
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
