@@ -73,6 +73,14 @@ test.describe('Parcours critiques', () => {
   test('admin — création de film custom', async ({ page }) => {
     await login(page, E2E_ADMIN, E2E_PASSWORD)
     await page.goto('/admin/movies/create')
+    await expect(page.getByRole('heading', { name: 'Ajouter un film' })).toBeVisible()
+
+    const categorySelect = page.getByTestId('admin-movie-category')
+    // Attendre le chargement des catégories (GET /categories) : sinon hydration / réactivité Vue
+    // peut réinitialiser les champs remplis trop tôt (le titre passait à « » alors que le reste restait).
+    await expect(categorySelect.locator('option[value]:not([value=""])').first()).toBeAttached({
+      timeout: 15_000,
+    })
 
     const title = `E2E Create ${Date.now()}`
     const description = 'Description créée par Playwright.'
@@ -84,10 +92,6 @@ test.describe('Parcours critiques', () => {
     await expect(page.getByTestId('admin-movie-description')).toHaveValue(description)
     await expect(page.getByTestId('admin-movie-release')).toHaveValue('2024-06-01')
     await expect(page.getByTestId('admin-movie-duration')).toHaveValue('100')
-    const categorySelect = page.getByTestId('admin-movie-category')
-    await expect(categorySelect.locator('option[value]:not([value=""])').first()).toBeAttached({
-      timeout: 15_000,
-    })
     await categorySelect.selectOption({ label: 'Action' })
     await expect(categorySelect).toHaveValue(/.+/)
 
