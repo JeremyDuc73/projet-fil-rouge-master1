@@ -30,11 +30,16 @@ test.describe('Parcours critiques', () => {
     await expect(page.getByRole('heading', { name: /Catalogue de Films/i })).toBeVisible()
 
     await page.getByTestId('catalog-search').fill('Alpha')
-    await expect(page.getByTestId('movie-card').filter({ hasText: 'E2E Film Alpha' })).toBeVisible()
-    await expect(page.getByTestId('movie-card')).toHaveCount(1)
+    // Ne pas compter toutes les cartes : la CI peut avoir d’autres films (TMDB) contenant « Alpha »
+    await expect(page.getByTestId('movie-card').filter({ hasText: 'E2E Film Alpha' })).toHaveCount(1)
 
     await page.getByTestId('catalog-search').clear()
-    await expect(page.getByTestId('movie-card')).toHaveCount(2, { timeout: 10_000 })
+    await expect(page.getByTestId('movie-card').filter({ hasText: 'E2E Film Alpha' })).toBeVisible({
+      timeout: 10_000,
+    })
+    await expect(page.getByTestId('movie-card').filter({ hasText: 'E2E Film Beta' })).toBeVisible({
+      timeout: 10_000,
+    })
 
     await page.getByTestId('catalog-category').selectOption({ label: 'Action' })
     await expect(page.getByTestId('movie-card').filter({ hasText: 'E2E Film Alpha' })).toBeVisible()
@@ -61,7 +66,7 @@ test.describe('Parcours critiques', () => {
       card.getByTestId('movie-favorite-toggle').click(),
     ])
     await page.goto('/profile/favorites')
-    await expect(page.getByText('E2E Film Alpha')).toBeVisible()
+    await expect(page.locator('[data-movie-title="E2E Film Alpha"]')).toBeVisible()
   })
 
   test('admin — création de film custom', async ({ page }) => {
