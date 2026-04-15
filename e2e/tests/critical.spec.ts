@@ -56,15 +56,16 @@ test.describe('Parcours critiques', () => {
     await page.getByTestId('catalog-search').fill('Alpha')
     const card = page.getByTestId('movie-card').filter({ hasText: 'E2E Film Alpha' }).first()
     await card.hover()
-    await Promise.all([
-      page.waitForResponse(
-        (res) =>
-          res.url().includes('/api/favorites/') &&
-          res.request().method() === 'POST' &&
-          res.ok()
-      ),
-      card.getByTestId('movie-favorite-toggle').click(),
-    ])
+    const favBtn = card.getByTestId('movie-favorite-toggle')
+    await expect(favBtn).toBeVisible({ timeout: 10_000 })
+    // Retry CI : si le film est déjà en favoris, un clic envoie DELETE — on rétablit l’état puis on ajoute.
+    const favoriClasses = await favBtn.getAttribute('class')
+    if (favoriClasses?.includes('bg-red-500')) {
+      await favBtn.click()
+      await expect(favBtn).toHaveClass(/bg-gray-800/)
+    }
+    await favBtn.click()
+    await expect(favBtn).toHaveClass(/bg-red-500/)
     await page.goto('/profile/favorites')
     await expect(page.locator('[data-movie-title="E2E Film Alpha"]')).toBeVisible()
   })
@@ -81,7 +82,11 @@ test.describe('Parcours critiques', () => {
     await page.getByTestId('admin-movie-category').selectOption({ index: 1 })
 
     await page.getByTestId('admin-movie-submit').click()
-    await expect(page).toHaveURL(/\/admin\/movies/, { timeout: 30_000 })
-    await expect(page.getByText(title)).toBeVisible()
+    // Ne pas utiliser /\/admin\/movies/ : ça matche aussi /admin/movies/create (sous-chaîne « /admin/movies/ »).
+    await expect(page).toHaveURL(
+      (url) => new URL(url).pathname.replace(/\/$/, '') === '/admin/movies',
+      { timeout: 30_000 }
+    )
+    await expect(page.getByText(title, { exact: true })).toBeVisible()
   })
 })
