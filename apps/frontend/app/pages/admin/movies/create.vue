@@ -10,7 +10,8 @@
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-      <form @submit.prevent="handleSubmit" class="space-y-6">
+      <!-- novalidate : la validation navigateur peut bloquer submit avant @submit.prevent (race chargement catégories, durée initiale 0, etc.) ; l’API valide. -->
+      <form novalidate @submit.prevent="handleSubmit" class="space-y-6">
         <!-- Title -->
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -19,6 +20,7 @@
           <input
             v-model="form.title"
             type="text"
+            data-testid="admin-movie-title"
             required
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             placeholder="Titre du film"
@@ -32,6 +34,7 @@
           </label>
           <textarea
             v-model="form.description"
+            data-testid="admin-movie-description"
             required
             rows="4"
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
@@ -48,6 +51,7 @@
             <input
               v-model="form.release_date"
               type="date"
+              data-testid="admin-movie-release"
               required
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             />
@@ -59,6 +63,7 @@
             <input
               v-model.number="form.duration_minutes"
               type="number"
+              data-testid="admin-movie-duration"
               required
               min="1"
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
@@ -74,6 +79,7 @@
           </label>
           <select
             v-model="form.category_id"
+            data-testid="admin-movie-category"
             required
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
           >
@@ -107,6 +113,7 @@
         <div class="flex gap-4 pt-4">
           <button
             type="submit"
+            data-testid="admin-movie-submit"
             :disabled="loading"
             class="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors disabled:opacity-50"
           >
@@ -125,6 +132,8 @@
 </template>
 
 <script setup lang="ts">
+import { nextTick } from 'vue'
+
 definePageMeta({
   middleware: ['auth', 'admin'],
   layout: 'admin'
@@ -189,17 +198,34 @@ onMounted(async () => {
 })
 
 const handleSubmit = async () => {
+  await nextTick()
   loading.value = true
   try {
-    // 1. Créer le film
-    const payload = {
-      title: form.title,
-      description: form.description,
-      release_date: form.release_date,
-      duration: form.duration_minutes,
-      categoryIds: form.category_id ? [parseInt(form.category_id as any)] : []
+    const durationNum = Number(form.duration_minutes)
+    if (!Number.isFinite(durationNum) || durationNum < 1 || durationNum > 1000) {
+      toast.add({
+        title: 'Erreur',
+        description: 'Indiquez une durée valide (1 à 1000 minutes).',
+        color: 'red',
+        icon: 'ph:x-circle'
+      })
+      return
     }
-    
+
+    const categoryIdNum = parseInt(String(form.category_id), 10)
+    const categoryIds =
+      Number.isFinite(categoryIdNum) && categoryIdNum >= 1 ? [categoryIdNum] : []
+
+    const release = form.release_date?.trim()
+    // 1. Créer le film — éviter duration: 0 / NaN (JSON.stringify(NaN) → null → 400 côté API)
+    const payload = {
+      title: form.title.trim(),
+      description: form.description.trim(),
+      ...(release ? { release_date: release } : {}),
+      duration: Math.floor(durationNum),
+      ...(categoryIds.length ? { categoryIds } : {})
+    }
+
     const response = await api.post('/movies', payload)
     const movieId = response.data.id
     

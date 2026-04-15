@@ -79,6 +79,7 @@
         <div v-if="isAdmin" class="p-1">
           <NuxtLink
             to="/admin/dashboard"
+            data-testid="nav-administration"
             @click="closeMenu"
             class="flex items-center gap-3 px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-md transition-colors"
           >

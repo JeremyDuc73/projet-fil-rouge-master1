@@ -27,15 +27,24 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
-    // Set auth data
-    setAuth(user: User, token: string) {
+    setAuth(user: User, accessToken: string, refreshToken?: string | null) {
       this.user = user
-      this.token = token
+      this.token = accessToken
       this.isAuthenticated = true
-      
+
       if (process.client) {
-        localStorage.setItem('auth_token', token)
+        localStorage.setItem('auth_token', accessToken)
         localStorage.setItem('auth_user', JSON.stringify(user))
+        if (refreshToken) {
+          localStorage.setItem('auth_refresh_token', refreshToken)
+        }
+      }
+    },
+
+    updateAccessToken(accessToken: string) {
+      this.token = accessToken
+      if (process.client) {
+        localStorage.setItem('auth_token', accessToken)
       }
     },
 
@@ -44,10 +53,11 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       this.token = null
       this.isAuthenticated = false
-      
+
       if (process.client) {
         localStorage.removeItem('auth_token')
         localStorage.removeItem('auth_user')
+        localStorage.removeItem('auth_refresh_token')
       }
     },
 
@@ -56,7 +66,7 @@ export const useAuthStore = defineStore('auth', {
       if (process.client) {
         const token = localStorage.getItem('auth_token')
         const userStr = localStorage.getItem('auth_user')
-        
+
         if (token && userStr) {
           try {
             const user = JSON.parse(userStr)
@@ -79,8 +89,12 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.post<any>(API_ENDPOINTS.LOGIN, credentials)
 
         if (response.success && response.data) {
-          this.setAuth(response.data.user, response.data.accessToken)
-          
+          this.setAuth(
+            response.data.user,
+            response.data.accessToken,
+            response.data.refreshToken
+          )
+
           // Load user favorites, watchlist and reviews
           const favoritesStore = useFavoritesStore()
           const watchlistStore = useWatchlistStore()
@@ -114,8 +128,12 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.post<any>(API_ENDPOINTS.REGISTER, registerData)
 
         if (response.success && response.data) {
-          this.setAuth(response.data.user, response.data.accessToken)
-          
+          this.setAuth(
+            response.data.user,
+            response.data.accessToken,
+            response.data.refreshToken
+          )
+
           // Initialize empty favorites and watchlist
           const favoritesStore = useFavoritesStore()
           const watchlistStore = useWatchlistStore()
@@ -163,7 +181,6 @@ export const useAuthStore = defineStore('auth', {
       navigateTo('/auth/login')
     },
 
-    // Fetch current user
     async fetchUser() {
       const api = useApi()
 
@@ -176,8 +193,8 @@ export const useAuthStore = defineStore('auth', {
             localStorage.setItem('auth_user', JSON.stringify(response.data))
           }
         }
-      } catch (error) {
-        this.clearAuth()
+      } catch {
+        // ignored
       }
     },
   },

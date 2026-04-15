@@ -11,7 +11,6 @@ const __dirname = path.dirname(__filename);
 const uploadsDir = path.join(__dirname, '../../uploads/posters');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
-    console.log('✅ Created uploads/posters directory');
 }
 
 const storage = multer.diskStorage({
