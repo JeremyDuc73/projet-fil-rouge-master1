@@ -25,10 +25,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-app.use((req, res, next) => {
-    logger.info(`${req.method} ${req.path}`);
-    next();
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.use((req, res, next) => {
+        logger.info(`${req.method} ${req.path}`);
+        next();
+    });
+}
 
 app.get('/health', (req, res) => {
     res.json({ 

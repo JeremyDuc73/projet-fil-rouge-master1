@@ -17,7 +17,10 @@ async function login(page: Page, email: string, password: string) {
 test.describe('Parcours critiques', () => {
   test('connexion utilisateur', async ({ page }) => {
     await login(page, E2E_USER, E2E_PASSWORD)
-    await expect(page.getByRole('link', { name: /Voir tout/i })).toBeVisible({ timeout: 25_000 })
+    // Plusieurs liens « Voir tout » sur l’accueil (par section) : cibler la section Films populaires
+    await expect(
+      page.locator('section').filter({ hasText: 'Films populaires' }).getByRole('link', { name: /Voir tout/i })
+    ).toBeVisible({ timeout: 25_000 })
   })
 
   test('catalogue — recherche et filtres', async ({ page }) => {

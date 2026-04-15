@@ -20,12 +20,20 @@ export const errorHandler = (err, req, res, next) => {
     const statusCode = error.statusCode || 500;
     const message = error.isOperational ? error.message : 'Internal server error';
 
-    logger.error(message, {
-        statusCode,
-        stack: err.stack,
-        path: req.path,
-        method: req.method
-    });
+    const skipNoiseInTest =
+        process.env.NODE_ENV === 'test' &&
+        error.isOperational &&
+        statusCode >= 400 &&
+        statusCode < 500;
+
+    if (!skipNoiseInTest) {
+        logger.error(message, {
+            statusCode,
+            stack: err.stack,
+            path: req.path,
+            method: req.method
+        });
+    }
 
     res.status(statusCode).json({
         success: false,
