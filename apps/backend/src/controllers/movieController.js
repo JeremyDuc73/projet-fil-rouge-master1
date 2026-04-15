@@ -89,16 +89,7 @@ export const uploadPoster = asyncHandler(async (req, res) => {
 });
 
 export const searchTMDBMovies = asyncHandler(async (req, res) => {
-    const query = req.query.q;
-    
-    if (!query) {
-        return res.status(400).json({
-            success: false,
-            error: 'Query parameter is required'
-        });
-    }
-
-    const results = await movieService.searchTmdbMovies(query);
+    const results = await movieService.searchTmdbMovies(req.query.q);
 
     res.json({
         success: true,

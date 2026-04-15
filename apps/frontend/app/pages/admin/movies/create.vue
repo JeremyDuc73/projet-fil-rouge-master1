@@ -19,6 +19,7 @@
           <input
             v-model="form.title"
             type="text"
+            data-testid="admin-movie-title"
             required
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             placeholder="Titre du film"
@@ -32,6 +33,7 @@
           </label>
           <textarea
             v-model="form.description"
+            data-testid="admin-movie-description"
             required
             rows="4"
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
@@ -48,6 +50,7 @@
             <input
               v-model="form.release_date"
               type="date"
+              data-testid="admin-movie-release"
               required
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             />
@@ -59,6 +62,7 @@
             <input
               v-model.number="form.duration_minutes"
               type="number"
+              data-testid="admin-movie-duration"
               required
               min="1"
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
@@ -74,6 +78,7 @@
           </label>
           <select
             v-model="form.category_id"
+            data-testid="admin-movie-category"
             required
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
           >
@@ -107,6 +112,7 @@
         <div class="flex gap-4 pt-4">
           <button
             type="submit"
+            data-testid="admin-movie-submit"
             :disabled="loading"
             class="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors disabled:opacity-50"
           >

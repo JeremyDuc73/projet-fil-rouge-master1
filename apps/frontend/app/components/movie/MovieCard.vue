@@ -1,5 +1,7 @@
 <template>
   <div 
+    data-testid="movie-card"
+    :data-movie-title="movie.title"
     class="group relative rounded-lg overflow-hidden bg-gray-900 cursor-pointer transition-all duration-300 hover:scale-105 hover:z-10 hover:shadow-2xl"
     @click="goToMovie"
   >
@@ -63,6 +65,7 @@
         <!-- Add to favorites -->
         <button
           v-if="isAuthenticated"
+          data-testid="movie-favorite-toggle"
           @click.stop="toggleFavorite"
           class="flex items-center justify-center w-8 h-8 rounded-full transition-all border cursor-pointer"
           :class="isFavorite 
